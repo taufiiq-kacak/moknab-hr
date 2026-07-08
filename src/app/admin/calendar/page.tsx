@@ -63,40 +63,36 @@ export default async function AdminCalendarPage() {
     redirect('/')
   }
 
-  // 2. Fetch all Staff
-  const { data: staffRaw } = await supabase
-    .from('staff')
-    .select('id, name, staff_id, phone, role, active, shift_id, shifts ( id, name, start_time, end_time )')
-    .order('name', { ascending: true })
+  // 2. Fetch data in parallel
+  const [
+    staffRawResult,
+    shiftsRawResult,
+    leavesRawResult,
+    attendanceRawResult,
+    holidays
+  ] = await Promise.all([
+    supabase
+      .from('staff')
+      .select('id, name, staff_id, phone, role, active, shift_id, shifts ( id, name, start_time, end_time )')
+      .order('name', { ascending: true }),
+    supabase
+      .from('shifts')
+      .select('id, name, start_time, end_time')
+      .order('name', { ascending: true }),
+    supabase
+      .from('leave_requests')
+      .select('id, staff_id, leave_type, start_date, end_date, status, staff ( name )')
+      .eq('status', 'approved'),
+    supabase
+      .from('attendance')
+      .select('id, staff_id, date, clock_in_at, clock_out_at, staff ( name )'),
+    getMalaysiaHolidays(new Date().getFullYear())
+  ])
 
-  const staffList = (staffRaw || []) as unknown as StaffProfile[]
-
-  // 3. Fetch all Shifts
-  const { data: shiftsRaw } = await supabase
-    .from('shifts')
-    .select('id, name, start_time, end_time')
-    .order('name', { ascending: true })
-
-  const shifts = (shiftsRaw || []) as unknown as Shift[]
-
-  // 4. Fetch all Approved Leaves
-  const { data: leavesRaw } = await supabase
-    .from('leave_requests')
-    .select('id, staff_id, leave_type, start_date, end_date, status, staff ( name )')
-    .eq('status', 'approved')
-
-  const leaves = (leavesRaw || []) as unknown as LeaveRequest[]
-
-  // 5. Fetch all Attendance Logs
-  const { data: attendanceRaw } = await supabase
-    .from('attendance')
-    .select('id, staff_id, date, clock_in_at, clock_out_at, staff ( name )')
-
-  const attendance = (attendanceRaw || []) as unknown as AttendanceLog[]
-
-  // 6. Fetch Public Holidays
-  const currentYear = new Date().getFullYear()
-  const holidays = await getMalaysiaHolidays(currentYear)
+  const staffList = (staffRawResult.data || []) as unknown as StaffProfile[]
+  const shifts = (shiftsRawResult.data || []) as unknown as Shift[]
+  const leaves = (leavesRawResult.data || []) as unknown as LeaveRequest[]
+  const attendance = (attendanceRawResult.data || []) as unknown as AttendanceLog[]
 
   return (
     <div className="space-y-6">

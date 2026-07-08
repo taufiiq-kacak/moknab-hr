@@ -16,20 +16,7 @@ export default async function AdminAttendancePage({ searchParams }: PageProps) {
   const params = await searchParams
   const supabase = await createClient()
 
-  // 1. Fetch Staff List (for filters)
-  const { data: staffMembers } = await supabase
-    .from('staff')
-    .select('id, name, staff_id')
-    .eq('role', 'staff')
-    .order('name', { ascending: true })
-
-  // 2. Fetch Shifts (for filters)
-  const { data: shifts } = await supabase
-    .from('shifts')
-    .select('id, name')
-    .order('name', { ascending: true })
-
-  // 3. Build Query for Attendance Records
+  // 1. Build Query for Attendance Records
   let query = supabase
     .from('attendance')
     .select(`
@@ -64,11 +51,29 @@ export default async function AdminAttendancePage({ searchParams }: PageProps) {
     query = query.lte('date', params.endDate)
   }
 
-  const { data: recordsRaw } = await query
-    .order('date', { ascending: false })
-    .order('clock_in_at', { ascending: false })
+  // 2. Fetch all data in parallel
+  const [
+    staffMembersResult,
+    shiftsResult,
+    recordsRawResult
+  ] = await Promise.all([
+    supabase
+      .from('staff')
+      .select('id, name, staff_id')
+      .eq('role', 'staff')
+      .order('name', { ascending: true }),
+    supabase
+      .from('shifts')
+      .select('id, name')
+      .order('name', { ascending: true }),
+    query
+      .order('date', { ascending: false })
+      .order('clock_in_at', { ascending: false })
+  ])
 
-  let records = recordsRaw || []
+  const staffMembers = staffMembersResult.data || []
+  const shifts = shiftsResult.data || []
+  let records = recordsRawResult.data || []
 
   // 4. In-memory filter for shift_id since it's nested
   if (params.shiftId) {

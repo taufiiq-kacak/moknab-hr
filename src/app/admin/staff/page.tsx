@@ -31,30 +31,30 @@ interface OfficeLocation {
 export default async function AdminStaffPage() {
   const supabase = await createClient()
 
-  // 1. Fetch staff
-  const { data: staffRaw } = await supabase
-    .from('staff')
-    .select('id, name, phone, staff_id, role, active, shift_id, shifts ( id, name, start_time, end_time )')
-    .order('name', { ascending: true })
+  // 1. Fetch staff, shifts, and geofence in parallel
+  const [
+    staffRawResult,
+    shiftsRawResult,
+    officeRawResult
+  ] = await Promise.all([
+    supabase
+      .from('staff')
+      .select('id, name, phone, staff_id, role, active, shift_id, shifts ( id, name, start_time, end_time )')
+      .order('name', { ascending: true }),
+    supabase
+      .from('shifts')
+      .select('*')
+      .order('name', { ascending: true }),
+    supabase
+      .from('office_locations')
+      .select('*')
+      .limit(1)
+      .single()
+  ])
 
-  const staffList = (staffRaw || []) as unknown as StaffProfile[]
-
-  // 2. Fetch shifts
-  const { data: shiftsRaw } = await supabase
-    .from('shifts')
-    .select('*')
-    .order('name', { ascending: true })
-
-  const shifts = (shiftsRaw || []) as Shift[]
-
-  // 3. Fetch office location
-  const { data: officeRaw } = await supabase
-    .from('office_locations')
-    .select('*')
-    .limit(1)
-    .single()
-
-  const office = officeRaw as OfficeLocation
+  const staffList = (staffRawResult.data || []) as unknown as StaffProfile[]
+  const shifts = (shiftsRawResult.data || []) as Shift[]
+  const office = officeRawResult.data as OfficeLocation
 
   return (
     <div className="space-y-8">

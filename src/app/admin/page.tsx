@@ -71,32 +71,32 @@ export default async function AdminPage() {
   const supabase = await createClient()
   const todayStr = getMalaysiaDateString()
 
-  // 1. Fetch active staff
-  const { data: staffDataRaw } = await supabase
-    .from('staff')
-    .select('id, name, staff_id, phone, shifts ( id, name, start_time, end_time )')
-    .eq('role', 'staff')
-    .eq('active', true)
+  // 1. Fetch dashboard data in parallel
+  const [
+    staffDataRawResult,
+    attendanceDataResult,
+    activeLeavesDataResult
+  ] = await Promise.all([
+    supabase
+      .from('staff')
+      .select('id, name, staff_id, phone, shifts ( id, name, start_time, end_time )')
+      .eq('role', 'staff')
+      .eq('active', true),
+    supabase
+      .from('attendance')
+      .select('*')
+      .eq('date', todayStr),
+    supabase
+      .from('leave_requests')
+      .select('staff_id, leave_type, status')
+      .eq('status', 'approved')
+      .lte('start_date', todayStr)
+      .gte('end_date', todayStr)
+  ])
 
-  const staffList = (staffDataRaw || []) as unknown as StaffProfile[]
-
-  // 2. Fetch today's attendance
-  const { data: attendanceData } = await supabase
-    .from('attendance')
-    .select('*')
-    .eq('date', todayStr)
-
-  const todayAttendance = (attendanceData || []) as AttendanceRecord[]
-
-  // 3. Fetch active leaves for today
-  const { data: activeLeavesData } = await supabase
-    .from('leave_requests')
-    .select('staff_id, leave_type, status')
-    .eq('status', 'approved')
-    .lte('start_date', todayStr)
-    .gte('end_date', todayStr)
-
-  const activeLeaves = (activeLeavesData || []) as ActiveLeave[]
+  const staffList = (staffDataRawResult.data || []) as unknown as StaffProfile[]
+  const todayAttendance = (attendanceDataResult.data || []) as AttendanceRecord[]
+  const activeLeaves = (activeLeavesDataResult.data || []) as ActiveLeave[]
 
   // Computations
   const totalStaff = staffList.length

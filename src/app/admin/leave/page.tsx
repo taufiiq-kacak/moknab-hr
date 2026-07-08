@@ -39,46 +39,48 @@ function formatDateRange(startDateStr: string, endDateStr: string) {
 export default async function AdminLeavePage() {
   const supabase = await createClient()
 
-  // 1. Fetch pending requests
-  const { data: pendingRaw } = await supabase
-    .from('leave_requests')
-    .select(`
-      id,
-      leave_type,
-      start_date,
-      end_date,
-      reason,
-      created_at,
-      staff:staff!leave_requests_staff_id_fkey (
-        name,
-        staff_id
-      )
-    `)
-    .eq('status', 'pending')
-    .order('created_at', { ascending: true })
+  // 1. Fetch pending and history requests in parallel
+  const [
+    pendingRawResult,
+    historyRawResult
+  ] = await Promise.all([
+    supabase
+      .from('leave_requests')
+      .select(`
+        id,
+        leave_type,
+        start_date,
+        end_date,
+        reason,
+        created_at,
+        staff:staff!leave_requests_staff_id_fkey (
+          name,
+          staff_id
+        )
+      `)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: true }),
+    supabase
+      .from('leave_requests')
+      .select(`
+        id,
+        leave_type,
+        start_date,
+        end_date,
+        reason,
+        status,
+        created_at,
+        reviewed_at,
+        staff:staff!leave_requests_staff_id_fkey (
+          name,
+          staff_id
+        )
+      `)
+      .order('created_at', { ascending: false })
+  ])
 
-  const pendingRequests = (pendingRaw || []) as unknown as any[]
-
-  // 2. Fetch all requests for history log
-  const { data: historyRaw } = await supabase
-    .from('leave_requests')
-    .select(`
-      id,
-      leave_type,
-      start_date,
-      end_date,
-      reason,
-      status,
-      created_at,
-      reviewed_at,
-      staff:staff!leave_requests_staff_id_fkey (
-        name,
-        staff_id
-      )
-    `)
-    .order('created_at', { ascending: false })
-
-  const historyRequests = (historyRaw || []) as unknown as LeaveRequest[]
+  const pendingRequests = (pendingRawResult.data || []) as unknown as any[]
+  const historyRequests = (historyRawResult.data || []) as unknown as LeaveRequest[]
 
   const getStatusStyle = (status: string) => {
     switch (status) {
