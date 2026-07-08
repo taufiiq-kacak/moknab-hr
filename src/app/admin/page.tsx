@@ -169,7 +169,7 @@ export default async function AdminPage() {
             <span className="text-[10px] font-bold text-brand-grey uppercase tracking-wider">Present Today</span>
             <h3 className="text-3xl font-bold text-brand-navy">{presentCount}</h3>
           </div>
-          <div className="h-12 w-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          <div className="h-12 w-12 rounded-xl bg-brand-light text-brand-blue flex items-center justify-center">
             <Clock className="h-6 w-6" />
           </div>
         </div>
@@ -180,7 +180,7 @@ export default async function AdminPage() {
             <span className="text-[10px] font-bold text-brand-grey uppercase tracking-wider">Late Arrivals</span>
             <h3 className="text-3xl font-bold text-brand-navy">{lateCount}</h3>
           </div>
-          <div className="h-12 w-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+          <div className="h-12 w-12 rounded-xl bg-brand-light text-brand-blue flex items-center justify-center">
             <AlertTriangle className="h-6 w-6" />
           </div>
         </div>
