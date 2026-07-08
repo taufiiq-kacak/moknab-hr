@@ -11,6 +11,16 @@
 }
 
 @theme inline {
+  --color-white: #121214; /* Overrides white cards with solid charcoal black panels */
+  --color-gray-50: #0E0E10; /* Overrides light details panels with deep charcoal black */
+  --color-gray-100: #1C1C1F; /* Overrides grey dividers with clean subtle dark lines */
+  --color-gray-150: #26262A;
+  --color-gray-200: #27272A;
+  --color-gray-300: #3F3F46;
+  --color-gray-400: #52525B;
+  --color-gray-800: #E4E4E7;
+  --color-gray-900: #F4F4F5;
+  
   --color-brand-navy: var(--brand-navy);
   --color-brand-blue: var(--brand-blue);
   --color-brand-light: var(--brand-light);
@@ -18,9 +28,14 @@
   --font-sans: var(--font-poppins);
 }
 
-@utility bg-white {
-  background-color: #121214;
+@utility text-white {
+  color: #FFFFFF !important;
 }
+
+@utility border-white {
+  border-color: #FFFFFF !important;
+}
+
 @utility bg-gray-50 {
   background-color: #0E0E10;
 }
