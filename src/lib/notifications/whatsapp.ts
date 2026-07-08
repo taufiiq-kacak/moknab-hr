@@ -34,7 +34,7 @@ Message: ${message}
       const res = await fetch(apiUrl || 'https://api.twilio.com/2010-04-01/Accounts/.../Messages.json', {
         method: 'POST',
         headers: {
-          'Authorization': `Basic ${Buffer.from(`AC...:${apiKey}`).toString('base64')}`,
+          'Authorization': `Basic ${btoa(`AC...:${apiKey}`)}`,
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({

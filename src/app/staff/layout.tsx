@@ -3,6 +3,8 @@ import { logoutAction } from '@/app/actions/auth'
 import { LogOut } from 'lucide-react'
 import StaffBottomNav from '@/components/StaffBottomNav'
 
+export const runtime = 'edge'
+
 interface Shift {
   name: string
 }

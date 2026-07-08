@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import AdminLayoutWrapper from '@/components/AdminLayoutWrapper'
 
+export const runtime = 'edge'
+
 interface StaffData {
   name: string
 }
