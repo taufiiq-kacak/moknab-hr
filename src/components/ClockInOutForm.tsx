@@ -188,7 +188,7 @@ export default function ClockInOutForm({ todayRecord, shiftInfo }: ClockInOutFor
             disabled={status === 'locating' || status === 'verifying'}
             className={`relative flex h-48 w-48 flex-col items-center justify-center rounded-full border-4 border-brand-light shadow-2xl transition-all duration-300 active:scale-[0.96] disabled:opacity-80 focus:outline-none ${
               hasClockedIn
-                ? 'bg-brand-navy text-white hover:bg-opacity-95 shadow-brand-navy/10'
+                ? 'bg-black text-white hover:bg-opacity-95 shadow-black/20'
                 : 'bg-brand-blue text-white hover:bg-opacity-95 shadow-brand-blue/15'
             }`}
           >

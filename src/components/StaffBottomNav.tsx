@@ -15,7 +15,7 @@ export default function StaffBottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-lg border-t border-gray-100 py-3 px-6 flex justify-around items-center shadow-lg shadow-brand-navy/5">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-lg border-t border-gray-100 py-3 px-6 flex justify-around items-center shadow-lg shadow-black/20">
       <Link
         href="/staff"
         className={`flex flex-col items-center gap-1 transition-all duration-200 ${

@@ -26,13 +26,13 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-brand-navy/35 backdrop-blur-[2px] lg:hidden transition-all duration-300 animate-scale-in"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px] lg:hidden transition-all duration-300 animate-scale-in"
         />
       )}
 
       {/* Sidebar Aside Drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-brand-navy text-white flex flex-col shrink-0 min-h-screen transform lg:static lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#070708] text-white flex flex-col shrink-0 min-h-screen transform lg:static lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

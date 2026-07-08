@@ -1,16 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FAFAFA; /* Zinc 50 background for clean, premium canvas */
-  --foreground: #18181B; /* Zinc 900 primary text */
-  --brand-navy: #0F0F10; /* Premium deep black for sidebar & headers */
-  --brand-blue: #DC2626; /* Premium crimson red accent */
-  --brand-light: #FEF2F2; /* Soft red-50 tint for selections and highlights */
-  --brand-grey: #71717A; /* Zinc 500 for secondary text */
+  --background: #09090B; /* Deepest black canvas background */
+  --foreground: #F4F4F5; /* Primary light text */
+  --brand-navy: #FFFFFF; /* Map text-brand-navy (primary header text) to white */
+  --brand-blue: #DC2626; /* Brand accent culinary red */
+  --brand-light: #2C0F10; /* Deep crimson wine tint for selections and highlights */
+  --brand-grey: #A1A1AA; /* Slate grey secondary text */
   --font-sans: var(--font-poppins);
 }
 
 @theme inline {
+  --color-white: #121214; /* Overrides white cards with solid charcoal black panels */
+  --color-gray-50: #0E0E10; /* Overrides light details panels with deep charcoal black */
+  --color-gray-100: #1C1C1F; /* Overrides grey dividers with clean subtle dark lines */
+  --color-gray-150: #26262A;
+  --color-gray-200: #27272A;
+  --color-gray-300: #3F3F46;
+  --color-gray-400: #52525B;
+  --color-gray-800: #E4E4E7;
+  --color-gray-900: #F4F4F5;
+  
   --color-brand-navy: var(--brand-navy);
   --color-brand-blue: var(--brand-blue);
   --color-brand-light: var(--brand-light);

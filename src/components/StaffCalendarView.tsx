@@ -209,7 +209,7 @@ export default function StaffCalendarView({ staff, leaves, attendance, holidays 
             }
 
             if (isSelected) {
-              cellStyle = 'bg-brand-navy text-white border border-brand-navy font-bold shadow-sm shadow-brand-navy/10 scale-105 transition-transform'
+              cellStyle = 'bg-brand-blue text-white border border-brand-blue font-bold shadow-sm shadow-brand-blue/15 scale-105 transition-transform'
             }
 
             return (
