@@ -1,11 +1,12 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import { loginAction } from '@/app/actions/auth'
-import { KeyRound, Smartphone, ShieldCheck } from 'lucide-react'
+import { KeyRound, Smartphone, ShieldCheck, X } from 'lucide-react'
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState(loginAction, null)
+  const [showForgotModal, setShowForgotModal] = useState(false)
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-brand-light px-4 py-12 sm:px-6 lg:px-8">
@@ -47,12 +48,21 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label 
-                htmlFor="password" 
-                className="block text-[10px] font-bold uppercase tracking-wider text-brand-navy mb-2"
-              >
-                Password
-              </label>
+              <div className="flex justify-between items-center mb-2">
+                <label 
+                  htmlFor="password" 
+                  className="block text-[10px] font-bold uppercase tracking-wider text-brand-navy"
+                >
+                  Password
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotModal(true)}
+                  className="text-[10px] font-bold text-brand-blue hover:underline focus:outline-none cursor-pointer"
+                >
+                  Forgot Password?
+                </button>
+              </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
                   <KeyRound className="h-5 w-5 text-gray-400" />
@@ -79,13 +89,45 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="group relative flex w-full justify-center rounded-xl bg-brand-blue py-3.5 px-4 text-sm font-medium text-white hover:bg-opacity-90 hover:shadow-lg hover:shadow-brand-blue/10 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:scale-100"
+              className="group relative flex w-full justify-center rounded-xl bg-brand-blue py-3.5 px-4 text-sm font-medium text-white hover:bg-opacity-90 hover:shadow-lg hover:shadow-brand-blue/10 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:scale-100 cursor-pointer"
             >
               {isPending ? 'Verifying...' : 'Sign In'}
             </button>
           </div>
         </form>
       </div>
+
+      {/* Forgot Password Modal Overlay */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-[4px] p-4 animate-scale-in">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl border border-gray-100 space-y-4 text-left">
+            <div className="text-center space-y-2">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 mb-1">
+                <KeyRound className="h-6 w-6" />
+              </div>
+              <h3 className="text-base font-bold text-brand-navy">Password Reset Instructions</h3>
+              <p className="text-xs text-brand-grey leading-relaxed">
+                Because Moknab HR uses secure internal-only accounts, password resets cannot be done via public email.
+              </p>
+            </div>
+            
+            <div className="bg-gray-50/50 rounded-xl p-4 border border-gray-100 text-[11px] text-brand-navy/90 space-y-2 font-medium">
+              <p className="font-bold text-brand-blue uppercase tracking-wide text-[9px] mb-1">How to Reset:</p>
+              <p>1. Please notify your **Moknab Manager / Admin**.</p>
+              <p>2. The Admin will open the **Admin Dashboard -> Staff Configuration**.</p>
+              <p>3. The Admin can edit your profile, type a new password, and click save to update it instantly.</p>
+            </div>
+
+            <button
+              onClick={() => setShowForgotModal(false)}
+              type="button"
+              className="w-full py-2.5 bg-brand-blue text-white rounded-xl text-xs font-semibold hover:bg-opacity-95 transition-all cursor-pointer"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
