@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { clockInAction, clockOutAction } from '@/app/actions/attendance'
+import { useState, useEffect } from 'react'
+import { clockInAction, clockOutAction, reportGeofenceBreachAction } from '@/app/actions/attendance'
 import { MapPin, Navigation, Check, Loader2, AlertCircle } from 'lucide-react'
 
 interface AttendanceRecord {
@@ -27,6 +27,35 @@ export default function ClockInOutForm({ todayRecord, shiftInfo }: ClockInOutFor
 
   const hasClockedIn = !!todayRecord?.clock_in_at
   const hasClockedOut = !!todayRecord?.clock_out_at
+
+  // Periodic Geofence Check (Heartbeat) when clocked in
+  useEffect(() => {
+    if (!hasClockedIn || hasClockedOut) return
+
+    const checkLocation = () => {
+      if (!navigator.geolocation) return
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords
+          await reportGeofenceBreachAction(latitude, longitude)
+        },
+        (error) => {
+          console.warn('[Geofence Heartbeat] Geolocation check failed:', error.message)
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      )
+    }
+
+    // Run first check after 5 seconds, then every 3 minutes
+    const initialTimeout = setTimeout(checkLocation, 5000)
+    const interval = setInterval(checkLocation, 3 * 60 * 1000)
+
+    return () => {
+      clearTimeout(initialTimeout)
+      clearInterval(interval)
+    }
+  }, [hasClockedIn, hasClockedOut])
 
   const formatTime = (timeStr: string) => {
     try {

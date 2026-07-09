@@ -214,7 +214,14 @@ export default async function AdminPage() {
                   className="flex items-center justify-between p-3.5 bg-brand-light/30 border border-brand-light/10 rounded-xl hover:bg-brand-light/50 transition-all"
                 >
                   <div className="space-y-0.5">
-                    <h5 className="text-xs font-semibold text-brand-navy">{staff.name}</h5>
+                    <div className="flex items-center gap-2">
+                      <h5 className="text-xs font-semibold text-brand-navy">{staff.name}</h5>
+                      {staff.record.is_breached && (
+                        <span className="px-1.5 py-0.5 rounded text-[8px] bg-amber-50 text-amber-600 font-bold border border-amber-100 uppercase tracking-wide animate-pulse">
+                          ⚠️ Left Geofence
+                        </span>
+                      )}
+                    </div>
                     <div className="flex gap-2 text-[10px] text-brand-grey font-medium">
                       <span>ID: {staff.staff_id}</span>
                       <span>•</span>

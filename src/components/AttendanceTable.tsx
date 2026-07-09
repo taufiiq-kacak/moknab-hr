@@ -26,6 +26,10 @@ interface AttendanceRecord {
   clock_in_lng: number
   clock_out_lat: number | null
   clock_out_lng: number | null
+  is_breached: boolean
+  breached_at: string | null
+  last_known_lat: number | null
+  last_known_lng: number | null
   staff: Staff
 }
 
@@ -322,15 +326,22 @@ export default function AttendanceTable({ records, staffMembers, shifts }: Atten
                         )}
                       </td>
                       <td className="py-4 px-6 whitespace-nowrap">
-                        {late ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-red-50 text-red-600 font-bold border border-red-100 uppercase tracking-wider">
-                            Late
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-600 font-bold border border-emerald-100 uppercase tracking-wider">
-                            On Time
-                          </span>
-                        )}
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          {late ? (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-red-50 text-red-600 font-bold border border-red-100 uppercase tracking-wider">
+                              Late
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-600 font-bold border border-emerald-100 uppercase tracking-wider">
+                              On Time
+                            </span>
+                          )}
+                          {rec.is_breached && (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-amber-50 text-amber-600 font-bold border border-amber-100 uppercase tracking-wider animate-pulse" title={rec.breached_at ? `Breached at ${formatTime(rec.breached_at)}` : ''}>
+                              ⚠️ Left Geofence
+                            </span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   )

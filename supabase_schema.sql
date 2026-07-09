@@ -62,6 +62,10 @@ create table attendance (
   clock_in_lng double precision not null,
   clock_out_lat double precision,
   clock_out_lng double precision,
+  is_breached boolean not null default false,
+  breached_at timestamp with time zone,
+  last_known_lat double precision,
+  last_known_lng double precision,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   constraint unique_staff_date unique (staff_id, date)
 );

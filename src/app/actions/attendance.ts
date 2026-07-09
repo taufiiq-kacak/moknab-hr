@@ -131,3 +131,69 @@ export async function clockOutAction(lat: number, lng: number) {
   revalidatePath('/admin')
   return { success: true }
 }
+
+export async function reportGeofenceBreachAction(lat: number, lng: number) {
+  const supabase = await createServerSupabase()
+
+  // 1. Get user session
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) {
+    return { error: 'Authentication required.' }
+  }
+
+  // 2. Fetch office configurations for geofencing
+  const { data: office, error: officeError } = await supabase
+    .from('office_locations')
+    .select('latitude, longitude, radius_meters')
+    .limit(1)
+    .single()
+
+  if (officeError || !office) {
+    return { error: 'Office location details are not set.' }
+  }
+
+  // 3. Compute distance from office
+  const distance = getDistanceMeters(lat, lng, office.latitude, office.longitude)
+  if (distance <= office.radius_meters) {
+    // User is still inside, no breach
+    return { success: true, breached: false }
+  }
+
+  // 4. Find today's attendance record
+  const todayStr = getMalaysiaDateString()
+  const { data: record, error: recordError } = await supabase
+    .from('attendance')
+    .select('id, clock_out_at, is_breached')
+    .eq('staff_id', user.id)
+    .eq('date', todayStr)
+    .maybeSingle()
+
+  if (recordError || !record) {
+    return { error: 'No active clock-in session found.' }
+  }
+
+  // If already clocked out or already flagged, no update needed
+  if (record.clock_out_at || record.is_breached) {
+    return { success: true, breached: true }
+  }
+
+  // 5. Flag geofence breach
+  const { error: updateError } = await supabase
+    .from('attendance')
+    .update({
+      is_breached: true,
+      breached_at: new Date().toISOString(),
+      last_known_lat: lat,
+      last_known_lng: lng,
+    })
+    .eq('id', record.id)
+
+  if (updateError) {
+    console.error('Breach update error:', updateError)
+    return { error: 'Failed to report breach.' }
+  }
+
+  revalidatePath('/staff')
+  revalidatePath('/admin')
+  return { success: true, breached: true }
+}
