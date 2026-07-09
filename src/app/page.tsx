@@ -3,6 +3,7 @@
 import { useActionState, useState } from 'react'
 import { loginAction } from '@/app/actions/auth'
 import { KeyRound, Smartphone, ShieldCheck, X } from 'lucide-react'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState(loginAction, null)
@@ -93,6 +94,16 @@ export default function LoginPage() {
             >
               {isPending ? 'Verifying...' : 'Sign In'}
             </button>
+          </div>
+
+          <div className="text-center text-xs text-brand-grey mt-4">
+            Don't have an account?{' '}
+            <Link 
+              href="/signup" 
+              className="font-bold text-brand-blue hover:underline cursor-pointer"
+            >
+              Register Staff Account
+            </Link>
           </div>
         </form>
       </div>
