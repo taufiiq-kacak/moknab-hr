@@ -113,8 +113,8 @@ export default function LoginPage() {
             
             <div className="bg-gray-50/50 rounded-xl p-4 border border-gray-100 text-[11px] text-brand-navy/90 space-y-2 font-medium">
               <p className="font-bold text-brand-blue uppercase tracking-wide text-[9px] mb-1">How to Reset:</p>
-              <p>1. Please notify your **Moknab Manager / Admin**.</p>
-              <p>2. The Admin will open the **Admin Dashboard -> Staff Configuration**.</p>
+              <p>1. Please notify your <strong>Moknab Manager / Admin</strong>.</p>
+              <p>2. The Admin will open the <strong>Admin Dashboard &rarr; Staff Configuration</strong>.</p>
               <p>3. The Admin can edit your profile, type a new password, and click save to update it instantly.</p>
             </div>
 
